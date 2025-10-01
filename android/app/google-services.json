@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "446989287993",
+    "project_id": "cinema-auth-7e3cd",
+    "storage_bucket": "cinema-auth-7e3cd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:446989287993:android:47c07aedf0a1fc3d0a83e8",
+        "android_client_info": {
+          "package_name": "com.example.cinema_auth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "446989287993-11eldakb11spmsdg5n5jt885o3o8src6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDHeLCPtseB0PmK72HoI2ZiXedan2vkjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "446989287993-11eldakb11spmsdg5n5jt885o3o8src6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:446989287993:android:b684f979847fd5f40a83e8",
+        "android_client_info": {
+          "package_name": "com.example.datvexemphim"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "446989287993-11eldakb11spmsdg5n5jt885o3o8src6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDHeLCPtseB0PmK72HoI2ZiXedan2vkjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "446989287993-11eldakb11spmsdg5n5jt885o3o8src6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
