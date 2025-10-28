@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class ProfileScreen1 extends StatefulWidget { // Đổi tên thành ProfileScreen để khớp với SettingScreen
+  const ProfileScreen1({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<ProfileScreen1> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen1> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -33,7 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       if (userDoc.exists) {
         final data = userDoc.data()!;
-        _nameController.text = data['name'] ?? '';
+        _nameController.text = data['name'] ?? user.displayName ?? '';
         _phoneController.text = data['phone'] ?? '';
       } else {
         // Nếu user chưa có document trong Firestore, tạo mới
@@ -42,6 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           'phone': '',
           'createdAt': FieldValue.serverTimestamp(),
         });
+        _nameController.text = user.displayName ?? '';
       }
 
       _emailController.text = user.email ?? '';
@@ -55,8 +56,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (user == null) return;
 
     try {
+      // 🟢 BƯỚC QUAN TRỌNG: Cập nhật displayName trong Firebase Auth
+      if (_nameController.text != user.displayName) {
+        await user.updateDisplayName(_nameController.text);
+      }
+
       // 🔹 Cập nhật email trong Firebase Auth (nếu thay đổi)
       if (_emailController.text != user.email) {
+        // Lưu ý: Firebase yêu cầu xác minh email mới
         await user.verifyBeforeUpdateEmail(_emailController.text);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -95,7 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Chỉnh sửa hồ sơ"),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.red,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -130,16 +137,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ElevatedButton.icon(
               onPressed: _saveUserData,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
+                backgroundColor: Colors.red,
                 padding:
                 const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
               ),
-              icon: const Icon(Icons.save),
+              icon: const Icon(Icons.save, color: Colors.white),
               label: const Text(
                 "Lưu thay đổi",
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 16, color: Colors.white),
               ),
             ),
           ],

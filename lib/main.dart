@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // file được tạo sau khi chạy flutterfire configure
-import 'screens/login_screen.dart';
+import 'auth/auth_wrapper.dart'; // 👈 import AuthWrapper (đường dẫn tùy bạn)
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorSchemeSeed: Colors.red,
       ),
-      home: const LoginScreen(),
+      home: const AuthWrapper(), // 👈 Dùng AuthWrapper thay vì LoginScreen
     );
   }
 }

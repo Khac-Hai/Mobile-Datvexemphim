@@ -1,275 +1,139 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'setting/profile_screen.dart';
-import 'setting/change_password_screen.dart';
-import 'setting/wallet_screen.dart';
-import 'setting/giftcard_screen.dart';
-import 'setting/history_screen.dart';
-import 'setting/coupon_screen.dart';
-import 'setting/help_center_screen.dart';
-import 'setting/about_app_screen.dart';
-import 'package:datvexemphim/screens/logout_screen.dart';
+// Giả định các file này đã tồn tại trong project của bạn
+import 'logout.dart';
+import 'profile_screen.dart';
 
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
-
-  @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
-  final _auth = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
-
-  String? name;
-  String? email;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUserData();
-  }
-
-  Future<void> _loadUserData() async {
-    final user = _auth.currentUser;
-    if (user == null) return;
-
-    final doc = await _firestore.collection('users').doc(user.uid).get();
-    setState(() {
-      name = doc.data()?['name'] ?? user.displayName ?? "Người dùng CGV";
-      email = user.email ?? "Chưa có email";
-    });
-  }
+class SettingScreen extends StatelessWidget {
+  const SettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Lấy thông tin người dùng từ Firebase
+    final user = FirebaseAuth.instance.currentUser;
+    // Lấy tên đầy đủ, nếu null thì mặc định là "Thành viên"
+    final fullName = user?.displayName ?? "Thành viên";
+
+    // Loai bo logic tách tên. Chỉ sử dụng fullName
+    final greetingName = fullName;
+
+    // Loại bỏ hoàn toàn remainingName
+    // final remainingName = '';
+
+    final photoURL = user?.photoURL ??
+        "https://i.pinimg.com/736x/8c/bb/62/8cbb62b6090179f4a13c2b65b1cebb5f.jpg";
+
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: const Text("Tài khoản của tôi"),
-        backgroundColor: Colors.red,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          // --- Thông tin người dùng ---
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                )
-              ],
+      // Quan trọng: Đặt nền Scaffold là trong suốt để không cản trở showGeneralDialog
+      backgroundColor: Colors.transparent,
+      body: Align(
+        alignment: Alignment.centerRight,
+        child: Container(
+          // Chiếm toàn bộ chiều cao và 90% chiều ngang (hoặc 70% nếu bạn thích)
+          width: MediaQuery.of(context).size.width * 0.9,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            // Đảm bảo màu nền là MÀU ĐEN MỜ ĐỤC (opacity 1.0) để che màn hình Home
+            color: Colors.black.withOpacity(1.0),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(12),
+              bottomLeft: Radius.circular(12),
             ),
-            child: Row(
-              children: [
-                const CircleAvatar(
-                  radius: 40,
-                  backgroundImage:
-                  NetworkImage("https://i.pravatar.cc/150?img=5"),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ---------- Thông tin người dùng ----------
+                  Row(
                     children: [
-                      Text(
-                        name ?? "Đang tải...",
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                      CircleAvatar(
+                        radius: 28,
+                        backgroundImage: NetworkImage(photoURL),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        email ?? "Đang tải...",
-                        style: const TextStyle(color: Colors.grey),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Normal",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 13,
+                              ),
+                            ),
+                            // Hiển thị "Xin chào" và tên đầy đủ trên MỘT DÒNG
+                            Text(
+                              "Xin chào $greetingName",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            // Đã loại bỏ dòng hiển thị tên thứ hai (remainingName)
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 4, horizontal: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.red.shade50,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Text(
-                          "Thành viên CGV Regular",
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                      IconButton(
+                        icon: const Icon(Icons.logout, color: Colors.white),
+                        onPressed: () {
+                          showLogoutDialog(context); // Thêm hàm này vào file logout.dart của bạn
+
+                        },
                       ),
                     ],
                   ),
-                )
-              ],
+
+                  const SizedBox(height: 40),
+
+                  // ---------- Các mục menu ----------
+                  _buildMenuItem(Icons.movie, "Phim đã xem"),
+                  _buildMenuItem(Icons.confirmation_num, "Vé của tôi"),
+
+                  _buildMenuItem(
+                    Icons.person,
+                    "Thông tin thành viên",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileScreen(),
+                        ),
+                      );
+                    },
+                  ),
+
+                  _buildMenuItem(Icons.card_giftcard, "Chính sách tích điểm"),
+                ],
+              ),
             ),
           ),
-
-          const SizedBox(height: 24),
-
-          // --- Nhóm 1: Hồ sơ cá nhân ---
-          _buildSectionTitle("Tài khoản & Hồ sơ"),
-          _buildListTile(
-            icon: Icons.person_outline,
-            title: "Chỉnh sửa hồ sơ",
-            onTap: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ProfileScreen()),
-              );
-              // 🔁 Reload lại sau khi chỉnh sửa
-              _loadUserData();
-            },
-          ),
-          _buildListTile(
-            icon: Icons.lock_outline,
-            title: "Đổi mật khẩu",
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ChangePasswordScreen()),
-              );
-            },
-          ),
-
-          const SizedBox(height: 24),
-
-          // --- Nhóm 2: Ví & Thanh toán ---
-          _buildSectionTitle("Ví & Thanh toán"),
-          _buildListTile(
-            icon: Icons.account_balance_wallet_outlined,
-            title: "Ví CGV Pay",
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const WalletScreen()),
-              );
-            },
-          ),
-          _buildListTile(
-            icon: Icons.card_giftcard_outlined,
-            title: "Thẻ quà tặng",
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const GiftCardScreen()),
-              );
-            },
-          ),
-
-          const SizedBox(height: 24),
-
-          // --- Nhóm 3: Lịch sử & Ưu đãi ---
-          _buildSectionTitle("Lịch sử & Ưu đãi"),
-          _buildListTile(
-            icon: Icons.history_outlined,
-            title: "Lịch sử đặt vé",
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const HistoryScreen()),
-              );
-            },
-          ),
-          _buildListTile(
-            icon: Icons.local_offer_outlined,
-            title: "Mã giảm giá của tôi",
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const CouponScreen()),
-              );
-            },
-          ),
-
-          const SizedBox(height: 24),
-
-          // --- Nhóm 4: Hỗ trợ & Khác ---
-          _buildSectionTitle("Hỗ trợ & Khác"),
-          _buildListTile(
-            icon: Icons.help_outline,
-            title: "Trung tâm hỗ trợ",
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const HelpCenterScreen()),
-              );
-            },
-          ),
-          _buildListTile(
-            icon: Icons.info_outline,
-            title: "Giới thiệu ứng dụng",
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AboutAppScreen()),
-              );
-            },
-          ),
-
-          const SizedBox(height: 24),
-
-          // --- Đăng xuất ---
-          ListTile(
-            leading: const Icon(Icons.logout, color: Colors.red),
-            title: const Text(
-              "Đăng xuất",
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const LogoutScreen()),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Tiêu đề nhóm
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8, left: 4),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.black87,
         ),
       ),
     );
   }
 
-  // Tạo từng dòng chức năng
-  Widget _buildListTile({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 4),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: ListTile(
-        leading: Icon(icon, color: Colors.red),
-        title: Text(title),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-        onTap: onTap,
+  Widget _buildMenuItem(IconData icon, String title, {VoidCallback? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.white),
+            const SizedBox(width: 16),
+            Text(
+              title,
+              style: const TextStyle(color: Colors.white, fontSize: 16),
+            ),
+          ],
+        ),
       ),
     );
   }
