@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/movie.dart';
+import '../services/cinema_screen.dart';
 
-// ================== TRANG CHÍNH ==================
 class MovieScreen extends StatefulWidget {
   const MovieScreen({super.key});
 
@@ -30,9 +30,23 @@ class _MovieScreenState extends State<MovieScreen> {
     super.dispose();
   }
 
+  // ✅ Mở trang chọn rạp (không truyền movieTitle nữa)
+  void _openCinemaScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const CinemaScreen(),
+      ),
+    );
+  }
+
   void _openDetail(
-      BuildContext context, String title, String imageUrl, String description,
-      [String? note]) {
+      BuildContext context,
+      String title,
+      String imageUrl,
+      String description, [
+        String? note,
+      ]) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -58,7 +72,7 @@ class _MovieScreenState extends State<MovieScreen> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          // 🌈 NỀN ẢNH
+          // ======= ẢNH NỀN =======
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 600),
             child: Container(
@@ -86,12 +100,11 @@ class _MovieScreenState extends State<MovieScreen> {
             ),
           ),
 
-          // ===== NỘI DUNG CHÍNH =====
+          // ======= NỘI DUNG CHÍNH =======
           SingleChildScrollView(
             padding: const EdgeInsets.only(bottom: 100, top: 100),
             child: Column(
               children: [
-                // === PAGEVIEW PHIM ===
                 SizedBox(
                   height: 560,
                   child: PageView.builder(
@@ -105,24 +118,16 @@ class _MovieScreenState extends State<MovieScreen> {
                       return Transform.scale(
                         scale: scale,
                         child: Container(
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
+                          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                           decoration: BoxDecoration(
                             color: Colors.black.withOpacity(0.4),
                             borderRadius: BorderRadius.circular(24),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.5),
-                                blurRadius: 12,
-                                offset: const Offset(0, 6),
-                              )
-                            ],
                           ),
                           child: Column(
                             children: [
                               ClipRRect(
-                                borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(24)),
+                                borderRadius:
+                                const BorderRadius.vertical(top: Radius.circular(24)),
                                 child: Image.network(
                                   movie.poster,
                                   fit: BoxFit.cover,
@@ -132,11 +137,9 @@ class _MovieScreenState extends State<MovieScreen> {
                               ),
                               Expanded(
                                 child: Container(
-                                  padding:
-                                  const EdgeInsets.fromLTRB(12, 12, 12, 20),
+                                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 20),
                                   child: Column(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(
                                         children: [
@@ -165,28 +168,16 @@ class _MovieScreenState extends State<MovieScreen> {
                                           backgroundColor: Colors.red.shade700,
                                           foregroundColor: Colors.white,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                            BorderRadius.circular(20),
+                                            borderRadius: BorderRadius.circular(20),
                                           ),
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 60, vertical: 12),
                                         ),
-                                        onPressed: () {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                  "Đặt vé cho ${movie.title} thành công!"),
-                                              duration:
-                                              const Duration(seconds: 2),
-                                            ),
-                                          );
-                                        },
+                                        onPressed: () => _openCinemaScreen(context),
                                         child: const Text(
                                           "ĐẶT VÉ",
                                           style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16),
+                                              fontWeight: FontWeight.bold, fontSize: 16),
                                         ),
                                       ),
                                     ],
@@ -201,9 +192,7 @@ class _MovieScreenState extends State<MovieScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 24),
-
-                // === BANNER KHUYẾN MÃI ===
+                // ======= BANNER KHUYẾN MÃI =======
                 Padding(
                   padding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

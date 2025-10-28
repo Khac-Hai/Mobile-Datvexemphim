@@ -7,23 +7,23 @@ class PromoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final promotions = [
       {
-        "title": "🔥 Mua 1 vé tặng 1 vé",
+        "title": "Mua 1 vé tặng 1 vé",
         "desc": "Áp dụng cho các suất chiếu trước 17h, từ thứ Hai đến thứ Năm.",
       },
       {
-        "title": "🍿 Combo bắp nước chỉ 49.000đ",
+        "title": " Combo bắp nước chỉ 49.000đ",
         "desc": "Tiết kiệm đến 30% khi mua cùng vé xem phim bất kỳ.",
       },
       {
-        "title": "🎬 Giảm 20% vé xem phim 2D và 3D",
+        "title": "Giảm 20% vé xem phim 2D và 3D",
         "desc": "Dành cho học sinh, sinh viên có thẻ học sinh/sinh viên hợp lệ.",
       },
       {
-        "title": "💳 Hoàn tiền 15% khi thanh toán qua MoMo",
+        "title": "Hoàn tiền 15% khi thanh toán qua MoMo",
         "desc": "Áp dụng cho giao dịch từ 100.000đ trở lên trong khung giờ 9h–21h.",
       },
       {
-        "title": "🎁 Thành viên VIP – Nhận ưu đãi đặc biệt mỗi tháng",
+        "title": " Thành viên VIP – Nhận ưu đãi đặc biệt mỗi tháng",
         "desc": "Tích điểm đổi quà, nhận vé miễn phí và ưu tiên chọn ghế.",
       },
     ];
