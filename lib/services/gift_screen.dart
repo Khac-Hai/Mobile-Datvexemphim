@@ -9,19 +9,19 @@ class GiftScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final gifts = [
       {
-        "title": "🎁 Nhận voucher 100.000đ khi đăng ký thành viên mới",
+        "title": "Nhận voucher 100.000đ khi đăng ký thành viên mới",
         "desc": "Đăng ký tài khoản và nhận ngay mã giảm giá cho vé đầu tiên.",
       },
       {
-        "title": "🍿 Tặng combo bắp nước cho sinh nhật khách hàng",
+        "title": "Tặng combo bắp nước cho sinh nhật khách hàng",
         "desc": "Áp dụng trong tuần sinh nhật, chỉ cần mang CMND hoặc CCCD.",
       },
       {
-        "title": "🎬 Tặng vé miễn phí cho khách hàng thân thiết",
+        "title": " Tặng vé miễn phí cho khách hàng thân thiết",
         "desc": "Thành viên tích đủ 10 vé sẽ được tặng 1 vé xem phim bất kỳ.",
       },
       {
-        "title": "💳 Giảm 20% khi thanh toán bằng thẻ ngân hàng đối tác",
+        "title": "Giảm 20% khi thanh toán bằng thẻ ngân hàng đối tác",
         "desc": "Áp dụng cho các thẻ Visa/MasterCard của ngân hàng liên kết.",
       },
     ];
