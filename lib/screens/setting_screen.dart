@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 // Giả định các file này đã tồn tại trong project của bạn
 import 'logout.dart';
 import 'profile_screen.dart';
+import 'points_policy_screen.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -22,7 +23,7 @@ class SettingScreen extends StatelessWidget {
     // final remainingName = '';
 
     final photoURL = user?.photoURL ??
-        "https://i.pinimg.com/736x/8c/bb/62/8cbb62b6090179f4a13c2b65b1cebb5f.jpg";
+        "https://s.yimg.com/fz/api/res/1.2/4JjhjiP9K5uJbpoqv._6ZA--~C/YXBwaWQ9c3JjaGRkO2ZpPWZpbGw7aD00MTI7cHhvZmY9NTA7cHlvZmY9MTAwO3E9ODA7c3M9MTt3PTM4OA--/https://i.pinimg.com/736x/d8/6c/f3/d86cf339d4baed9fb0ebfa9b83f3e61e.jpg";
 
     return Scaffold(
       // Quan trọng: Đặt nền Scaffold là trong suốt để không cản trở showGeneralDialog
@@ -108,7 +109,18 @@ class SettingScreen extends StatelessWidget {
                     },
                   ),
 
-                  _buildMenuItem(Icons.card_giftcard, "Chính sách tích điểm"),
+                  _buildMenuItem(
+                      Icons.card_giftcard,
+                      "Chính sách tích điểm",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PointsPolicyScreen(),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),

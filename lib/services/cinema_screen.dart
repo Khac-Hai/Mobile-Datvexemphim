@@ -1,5 +1,3 @@
-//rapppppp
-
 import 'package:flutter/material.dart';
 import 'time_slot_screen.dart';
 
@@ -88,28 +86,44 @@ class _CinemaScreenState extends State<CinemaScreen> {
       backgroundColor: Colors.grey.shade100,
       body: Column(
         children: [
+          // Thanh tiêu đề có nút quay lại
           Container(
             width: double.infinity,
             padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top + 14,
+              top: MediaQuery.of(context).padding.top + 10,
               bottom: 14,
             ),
             color: Colors.red.shade700,
-            child: const Center(
-              child: Text(
-                "CHỌN RẠP XEM PHIM",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+                  onPressed: () => Navigator.pop(context),
                 ),
-              ),
+                const Expanded(
+                  child: Center(
+                    child: Text(
+                      "CHỌN RẠP XEM PHIM",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 48), // để cân đối với nút bên trái
+              ],
             ),
           ),
+
+          // Nội dung
           Expanded(
             child: Row(
               children: [
+                // Danh sách vùng
                 Container(
                   width: 160,
                   decoration: BoxDecoration(
@@ -128,22 +142,28 @@ class _CinemaScreenState extends State<CinemaScreen> {
                         color: isSelected ? Colors.red.shade50 : Colors.transparent,
                         child: ListTile(
                           dense: true,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           title: Text(
                             region['name'],
                             style: TextStyle(
                               fontSize: 14,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              fontWeight:
+                              isSelected ? FontWeight.bold : FontWeight.normal,
                               color: isSelected ? Colors.red : Colors.black87,
                             ),
                           ),
-                          trailing: isSelected ? const Icon(Icons.arrow_right, color: Colors.red) : null,
+                          trailing: isSelected
+                              ? const Icon(Icons.arrow_right, color: Colors.red)
+                              : null,
                           onTap: () => setState(() => selectedIndex = index),
                         ),
                       );
                     },
                   ),
                 ),
+
+                // Danh sách rạp
                 Expanded(
                   child: Container(
                     color: Colors.grey.shade50,
@@ -151,27 +171,45 @@ class _CinemaScreenState extends State<CinemaScreen> {
                         ? const Center(
                       child: Text(
                         "Bạn chưa thêm rạp yêu thích.",
-                        style: TextStyle(fontSize: 16, color: Colors.black54),
+                        style:
+                        TextStyle(fontSize: 16, color: Colors.black54),
                       ),
                     )
                         : ListView.builder(
                       padding: const EdgeInsets.all(12),
-                      itemCount: (regions[selectedIndex]['cinemas'] as List).length,
+                      itemCount:
+                      (regions[selectedIndex]['cinemas'] as List).length,
                       itemBuilder: (context, i) {
-                        final cinema = (regions[selectedIndex]['cinemas'] as List)[i];
+                        final cinema =
+                        (regions[selectedIndex]['cinemas'] as List)[i];
                         final favorite = isFavorite(cinema);
                         return Card(
                           elevation: 2,
                           margin: const EdgeInsets.only(bottom: 10),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                           child: ListTile(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            title: Text(cinema, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            title: Text(
+                              cinema,
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
                             trailing: IconButton(
-                              icon: Icon(favorite ? Icons.favorite : Icons.favorite_border, color: favorite ? Colors.red : Colors.grey),
+                              icon: Icon(
+                                favorite
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: favorite
+                                    ? Colors.red
+                                    : Colors.grey,
+                              ),
                               onPressed: () => toggleFavorite(cinema),
                             ),
-                            onTap: () => setState(() => selectedCinema = cinema),
+                            onTap: () =>
+                                setState(() => selectedCinema = cinema),
                           ),
                         );
                       },
@@ -181,24 +219,33 @@ class _CinemaScreenState extends State<CinemaScreen> {
               ],
             ),
           ),
+
+          // Nút tiếp tục
           if (selectedCinema != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 16.0),
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red.shade700,
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
                 ),
-                icon: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white),
+                icon: const Icon(Icons.arrow_forward_ios_rounded,
+                    color: Colors.white),
                 label: Text(
                   "Tiếp tục với rạp: $selectedCinema",
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => TimeSlotScreen(cinema: selectedCinema!)),
+                    MaterialPageRoute(
+                        builder: (_) => TimeSlotScreen(cinema: selectedCinema!)),
                   );
                 },
               ),

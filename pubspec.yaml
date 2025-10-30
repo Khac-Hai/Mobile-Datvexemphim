@@ -66,6 +66,7 @@ flutter:
   assets:
   - lib/assets/icons/anhnen.png
   - lib/assets/icons/iconprofile.png
+  - lib/assets/icons/policy.jpg
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

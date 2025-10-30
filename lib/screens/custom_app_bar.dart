@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 // Giả định các file này đã tồn tại trong project của bạn
 import '../services/notification_screen.dart';
 import '../screens/setting_screen.dart';
+import '../screens/menu.dart'; // 👈 thêm dòng này
 
-// Màu nền tối cho SettingScreen (Giữ lại các hằng số này để đảm bảo CustomAppBar hoạt động)
+// Màu nền tối cho SettingScreen
 const Color _darkBackgroundColor = Color(0xFF1E1E1E);
 const Color _textColor = Colors.white;
 
@@ -16,31 +17,52 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Nếu là transparent, AppBar sẽ chỉ hiển thị nội dung, không có nền
     Widget appBarTitle = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // Nút menu bên trái
           IconButton(
             icon: const Icon(Icons.menu, color: Colors.white, size: 28),
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text("Menu đang được phát triển"),
-                  duration: Duration(seconds: 1),
-                ),
+              // 👇 Hiển thị Menu trượt từ trái sang phải
+              showGeneralDialog(
+                context: context,
+                barrierDismissible: true,
+                barrierLabel: '',
+                barrierColor: const Color(0x00000000), // trong suốt hoàn toàn
+                pageBuilder: (context, anim1, anim2) {
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: FractionallySizedBox(
+                      widthFactor: 0.8, // chiếm 80% chiều ngang
+                      heightFactor: 1.0,
+                      child: const CustomMenu(),
+                    ),
+                  );
+                },
+                transitionBuilder: (context, anim1, anim2, child) {
+                  final offsetAnimation = Tween<Offset>(
+                    begin: const Offset(-1, 0), // trượt từ TRÁI sang PHẢI
+                    end: Offset.zero,
+                  ).animate(anim1);
+                  return SlideTransition(
+                    position: offsetAnimation,
+                    child: child,
+                  );
+                },
               );
             },
           ),
+
+          // Nhóm icon bên phải
           Row(
             children: [
               IconButton(
                 icon: const Icon(Icons.notifications_none_outlined,
                     color: Colors.white, size: 28),
                 onPressed: () {
-                  // Giữ nguyên logic cũ
-                  // Đảm bảo file '../services/notification_screen.dart' đã tồn tại
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -53,26 +75,25 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 icon: const Icon(Icons.person_outline_rounded,
                     color: Colors.white, size: 28),
                 onPressed: () {
-                  // Logic hiển thị SettingScreen chiếm 90% màn hình bên phải
-                  // Đảm bảo file '../screens/setting_screen.dart' đã tồn tại
+                  // 👇 Hiển thị Setting trượt từ phải sang trái
                   showGeneralDialog(
                     context: context,
                     barrierDismissible: true,
                     barrierLabel: '',
-                    barrierColor: const Color(0x00000000), // MÀU ĐEN VỚI ALPHA 0 (TRONG SUỐT HOÀN TOÀN)
+                    barrierColor: const Color(0x00000000),
                     pageBuilder: (context, anim1, anim2) {
                       return Align(
                         alignment: Alignment.centerRight,
                         child: FractionallySizedBox(
-                          widthFactor: 0.8, // Chiếm 90% chiều ngang
-                          heightFactor: 1.0, // Chiếm toàn bộ chiều cao
+                          widthFactor: 0.8,
+                          heightFactor: 1.0,
                           child: const SettingScreen(),
                         ),
                       );
                     },
                     transitionBuilder: (context, anim1, anim2, child) {
                       final offsetAnimation = Tween<Offset>(
-                        begin: const Offset(1, 0), // Trượt từ phải sang
+                        begin: const Offset(1, 0), // trượt từ PHẢI sang TRÁI
                         end: Offset.zero,
                       ).animate(anim1);
                       return SlideTransition(
@@ -90,22 +111,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
 
     return AppBar(
-      // Khi isTransparent = true, đặt backgroundColor là trong suốt hoàn toàn
       backgroundColor:
       isTransparent ? Colors.transparent : Colors.red,
       elevation: 0,
       surfaceTintColor: Colors.transparent,
       scrolledUnderElevation: 0,
       titleSpacing: 0,
-
-      // Khi isTransparent = true, không còn flexibleSpace nào nữa
       flexibleSpace: null,
-
       title: appBarTitle,
     );
   }
 
   @override
-  // Kích thước mong muốn của AppBar. Tăng nhẹ kích thước cho thẩm mỹ.
   Size get preferredSize => const Size.fromHeight(kToolbarHeight + 10);
 }

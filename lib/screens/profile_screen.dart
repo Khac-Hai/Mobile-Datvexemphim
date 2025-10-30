@@ -1,7 +1,9 @@
+import 'package:datvexemphim/screens/setting/delete_account_screen.dart';
 import 'package:datvexemphim/screens/setting/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'setting/profile_screen.dart';
 import 'setting/change_password_screen.dart';
+import 'setting/delete_account_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -61,7 +63,12 @@ class ProfileScreen extends StatelessWidget {
             'lib/assets/icons/iconprofile.png', // 👉 Thay hình tương ứng
             'Xoá tài khoản',
                 () {
-              // TODO: Thêm chức năng xoá tài khoản
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DeleteAccountScreen(),
+                    ),
+                  );
             },
           ),
         ],

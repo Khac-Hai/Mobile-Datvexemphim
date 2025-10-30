@@ -11,7 +11,7 @@ class PromoScreen extends StatelessWidget {
         "desc": "Áp dụng cho các suất chiếu trước 17h, từ thứ Hai đến thứ Năm.",
       },
       {
-        "title": " Combo bắp nước chỉ 49.000đ",
+        "title": "Combo bắp nước chỉ 49.000đ",
         "desc": "Tiết kiệm đến 30% khi mua cùng vé xem phim bất kỳ.",
       },
       {
@@ -23,7 +23,7 @@ class PromoScreen extends StatelessWidget {
         "desc": "Áp dụng cho giao dịch từ 100.000đ trở lên trong khung giờ 9h–21h.",
       },
       {
-        "title": " Thành viên VIP – Nhận ưu đãi đặc biệt mỗi tháng",
+        "title": "Thành viên VIP – Nhận ưu đãi đặc biệt mỗi tháng",
         "desc": "Tích điểm đổi quà, nhận vé miễn phí và ưu tiên chọn ghế.",
       },
     ];
@@ -33,24 +33,37 @@ class PromoScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // === THANH TIÊU ĐỀ ĐỎ FULL MÀN HÌNH ===
+          // === THANH TIÊU ĐỀ CÓ NÚT QUAY LẠI ===
           Container(
             width: double.infinity,
             padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top + 12,
+              top: MediaQuery.of(context).padding.top + 10,
               bottom: 12,
             ),
             color: Colors.red,
-            child: const Center(
-              child: Text(
-                "KHUYẾN MÃI HOT",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                      color: Colors.white),
+                  onPressed: () => Navigator.pop(context),
                 ),
-              ),
+                const Expanded(
+                  child: Center(
+                    child: Text(
+                      "KHUYẾN MÃI HOT",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 48), // giữ tiêu đề nằm chính giữa
+              ],
             ),
           ),
 
@@ -63,8 +76,7 @@ class PromoScreen extends StatelessWidget {
                 final promo = promotions[index];
                 return Container(
                   margin: const EdgeInsets.only(bottom: 16),
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(14),
