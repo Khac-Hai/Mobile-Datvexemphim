@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../models/movie.dart';
-import '../services/cinema_screen.dart';
 
 class MovieScreen extends StatefulWidget {
   const MovieScreen({super.key});
@@ -30,16 +29,7 @@ class _MovieScreenState extends State<MovieScreen> {
     super.dispose();
   }
 
-  // ✅ Mở trang chọn rạp (không truyền movieTitle nữa)
-  void _openCinemaScreen(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const CinemaScreen(),
-      ),
-    );
-  }
-
+  // ✅ Hàm mở chi tiết banner
   void _openDetail(
       BuildContext context,
       String title,
@@ -163,6 +153,7 @@ class _MovieScreenState extends State<MovieScreen> {
                                           ),
                                         ],
                                       ),
+                                      // 👉 Nút "ĐẶT VÉ" giữ nguyên giao diện, KHÔNG điều hướng
                                       ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.red.shade700,
@@ -173,7 +164,15 @@ class _MovieScreenState extends State<MovieScreen> {
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 60, vertical: 12),
                                         ),
-                                        onPressed: () => _openCinemaScreen(context),
+                                        onPressed: () {
+                                          // ❌ Không điều hướng
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text("Tính năng đặt vé đang phát triển..."),
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                        },
                                         child: const Text(
                                           "ĐẶT VÉ",
                                           style: TextStyle(
@@ -194,8 +193,7 @@ class _MovieScreenState extends State<MovieScreen> {
 
                 // ======= BANNER KHUYẾN MÃI =======
                 Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Column(
                     children: [
                       GestureDetector(

@@ -1,8 +1,10 @@
+import 'package:datvexemphim/services/chonphim.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:datvexemphim/services/cinema_screen.dart';
 import 'package:datvexemphim/services/gift_screen.dart';
 import 'package:datvexemphim/services/promo_screen.dart';
+import '../services/chonphim.dart';
 import 'contact_screen.dart';
 
 class CustomMenu extends StatelessWidget {
@@ -36,8 +38,15 @@ class CustomMenu extends StatelessWidget {
                   const Divider(),
 
                   _buildMenuItem(Icons.local_movies_outlined, "Phim", () {
-                    // TODO: thêm chức năng sau
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ChonPhim(selectedCinema: "Tất cả rạp"),
+                      ),
+                    );
                   }),
+
                   const Divider(),
 
                   _buildMenuItem(Icons.theaters, "Rạp", () {

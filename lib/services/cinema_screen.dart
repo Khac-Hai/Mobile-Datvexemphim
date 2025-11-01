@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'time_slot_screen.dart';
+import '../services/chonphim.dart';
+import '../services/seat_selection_screen.dart';
+import '../services/time_slot_screen.dart';
 
 class CinemaScreen extends StatefulWidget {
   const CinemaScreen({super.key});
@@ -51,7 +53,14 @@ class _CinemaScreenState extends State<CinemaScreen> {
     },
     {
       'name': 'Đông Nam Bộ (6)',
-      'cinemas': ['Biên Hòa', 'Bình Dương', 'Dĩ An', 'Đồng Nai', 'Vũng Tàu', 'Tây Ninh']
+      'cinemas': [
+        'Biên Hòa',
+        'Bình Dương',
+        'Dĩ An',
+        'Đồng Nai',
+        'Vũng Tàu',
+        'Tây Ninh'
+      ]
     },
     {
       'name': 'Tây Nam Bộ (4)',
@@ -142,14 +151,12 @@ class _CinemaScreenState extends State<CinemaScreen> {
                         color: isSelected ? Colors.red.shade50 : Colors.transparent,
                         child: ListTile(
                           dense: true,
-                          contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           title: Text(
                             region['name'],
                             style: TextStyle(
                               fontSize: 14,
-                              fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.normal,
+                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                               color: isSelected ? Colors.red : Colors.black87,
                             ),
                           ),
@@ -171,17 +178,14 @@ class _CinemaScreenState extends State<CinemaScreen> {
                         ? const Center(
                       child: Text(
                         "Bạn chưa thêm rạp yêu thích.",
-                        style:
-                        TextStyle(fontSize: 16, color: Colors.black54),
+                        style: TextStyle(fontSize: 16, color: Colors.black54),
                       ),
                     )
                         : ListView.builder(
                       padding: const EdgeInsets.all(12),
-                      itemCount:
-                      (regions[selectedIndex]['cinemas'] as List).length,
+                      itemCount: (regions[selectedIndex]['cinemas'] as List).length,
                       itemBuilder: (context, i) {
-                        final cinema =
-                        (regions[selectedIndex]['cinemas'] as List)[i];
+                        final cinema = (regions[selectedIndex]['cinemas'] as List)[i];
                         final favorite = isFavorite(cinema);
                         return Card(
                           elevation: 2,
@@ -194,22 +198,18 @@ class _CinemaScreenState extends State<CinemaScreen> {
                             title: Text(
                               cinema,
                               style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500),
+                                  fontSize: 16, fontWeight: FontWeight.w500),
                             ),
                             trailing: IconButton(
                               icon: Icon(
                                 favorite
                                     ? Icons.favorite
                                     : Icons.favorite_border,
-                                color: favorite
-                                    ? Colors.red
-                                    : Colors.grey,
+                                color: favorite ? Colors.red : Colors.grey,
                               ),
                               onPressed: () => toggleFavorite(cinema),
                             ),
-                            onTap: () =>
-                                setState(() => selectedCinema = cinema),
+                            onTap: () => setState(() => selectedCinema = cinema),
                           ),
                         );
                       },
@@ -227,25 +227,21 @@ class _CinemaScreenState extends State<CinemaScreen> {
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red.shade700,
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                 ),
-                icon: const Icon(Icons.arrow_forward_ios_rounded,
-                    color: Colors.white),
+                icon: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white),
                 label: Text(
                   "Tiếp tục với rạp: $selectedCinema",
                   style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+                      fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => TimeSlotScreen(cinema: selectedCinema!)),
+                      builder: (_) => ChonPhim(selectedCinema: selectedCinema!), // ✅ gọi sang màn chọn phim
+                    ),
                   );
                 },
               ),
