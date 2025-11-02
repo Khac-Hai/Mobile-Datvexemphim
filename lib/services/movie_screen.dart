@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/movie.dart';
+import 'cinema_screen.dart';
 
 class MovieScreen extends StatefulWidget {
   const MovieScreen({super.key});
@@ -165,11 +166,10 @@ class _MovieScreenState extends State<MovieScreen> {
                                               horizontal: 60, vertical: 12),
                                         ),
                                         onPressed: () {
-                                          // ❌ Không điều hướng
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                              content: Text("Tính năng đặt vé đang phát triển..."),
-                                              duration: Duration(seconds: 2),
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) => CinemaScreen(selectedMovie: movie.title),
                                             ),
                                           );
                                         },

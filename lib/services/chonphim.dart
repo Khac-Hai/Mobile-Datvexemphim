@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'time_slot_screen.dart';
+import 'package:datvexemphim/models/movie.dart'; // 👈 nhớ import file Movie vào
 
 class ChonPhim extends StatefulWidget {
   final String selectedCinema;
@@ -11,37 +12,7 @@ class ChonPhim extends StatefulWidget {
 }
 
 class _ChonPhimState extends State<ChonPhim> {
-  // Danh sách phim mẫu
-  final List<Map<String, dynamic>> movies = [
-    {
-      'title': 'Avengers: Endgame',
-      'image':
-      'https://upload.wikimedia.org/wikipedia/en/0/0d/Avengers_Endgame_poster.jpg',
-      'duration': '3h 2m',
-      'genre': 'Action, Sci-Fi',
-    },
-    {
-      'title': 'Cục vàng của ngoại',
-      'image':
-      'https://www.cgv.vn/media/catalog/product/cache/1/thumbnail/240x388/c88460ec71d04fa96e628a21494d2fd3/4/7/470wx700h-cvcn_1.jpg',
-      'duration': '2h 28m',
-      'genre': 'Gia đình, Tâm lý',
-    },
-    {
-      'title': 'Cải Mả ',
-      'image':
-      'https://www.cgv.vn/media/catalog/product/cache/1/thumbnail/240x388/c88460ec71d04fa96e628a21494d2fd3/6/7/675wx1000h_1.jpg',
-      'duration': '1h 50m',
-      'genre': 'Kinh dị',
-    },
-    {
-      'title': 'Điện thoại đen',
-      'image':
-      'https://www.cgv.vn/media/catalog/product/cache/1/thumbnail/240x388/c88460ec71d04fa96e628a21494d2fd3/4/7/470x700-tbp2.jpg',
-      'duration': '2h 56m',
-      'genre': 'Kinh dị',
-    },
-  ];
+  final List<Movie> movies = Movie.sampleMovies;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +20,11 @@ class _ChonPhimState extends State<ChonPhim> {
       appBar: AppBar(
         title: Text(
           'Chọn phim tại ${widget.selectedCinema}',
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.white),
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         backgroundColor: Colors.redAccent,
       ),
@@ -67,7 +42,7 @@ class _ChonPhimState extends State<ChonPhim> {
                   MaterialPageRoute(
                     builder: (_) => TimeSlotScreen(
                       cinema: widget.selectedCinema,
-                      movie: movie['title'],
+                      movie: movie.title,
                     ),
                   ),
                 );
@@ -86,7 +61,7 @@ class _ChonPhimState extends State<ChonPhim> {
                         bottomLeft: Radius.circular(12),
                       ),
                       child: Image.network(
-                        movie['image'],
+                        movie.poster,
                         height: 120,
                         width: 90,
                         fit: BoxFit.cover,
@@ -101,7 +76,7 @@ class _ChonPhimState extends State<ChonPhim> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              movie['title'],
+                              movie.title,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -109,12 +84,17 @@ class _ChonPhimState extends State<ChonPhim> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Thể loại: ${movie['genre']}',
-                              style: const TextStyle(fontSize: 14),
+                              'Thời lượng: ${movie.duration}',
+                              style: const TextStyle(fontSize: 13),
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'Thời lượng: ${movie['duration']}',
+                              'Khởi chiếu: ${movie.date}',
+                              style: const TextStyle(fontSize: 13),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              'Đánh giá: ⭐ ${movie.rating}',
                               style: const TextStyle(fontSize: 13),
                             ),
                             const SizedBox(height: 6),
@@ -126,13 +106,12 @@ class _ChonPhimState extends State<ChonPhim> {
                                 ),
                               ),
                               onPressed: () {
-                                // ✅ Cũng điều hướng giống khi nhấn vào thẻ phim
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (_) => TimeSlotScreen(
                                       cinema: widget.selectedCinema,
-                                      movie: movie['title'],
+                                      movie: movie.title,
                                     ),
                                   ),
                                 );

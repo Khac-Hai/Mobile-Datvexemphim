@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'payment_screen.dart'; // ✅ thêm dòng import này
+import 'package:shared_preferences/shared_preferences.dart';
+import 'payment_screen.dart';
 
 class SeatSelectionScreen extends StatefulWidget {
   final String cinema;
@@ -19,49 +20,54 @@ class SeatSelectionScreen extends StatefulWidget {
 
 class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
   final Set<String> selectedSeats = {};
-  final Set<String> bookedSeats = {
-    'A1', 'A2', 'B4', 'C5', 'D8', 'E3'
-  }; // ✅ giả lập ghế đã đặt
+  final Set<String> bookedSeats = {};
+  static const int seatPrice = 50000;
 
-  static const int seatPrice = 50000; // 💰 Giá 1 ghế: 50.000 VND
+  @override
+  void initState() {
+    super.initState();
+    _loadBookedSeats();
+  }
+
+  Future<void> _loadBookedSeats() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = '${widget.movie}_${widget.cinema}_${widget.timeSlot}';
+    final saved = prefs.getStringList(key);
+    if (saved != null) {
+      setState(() {
+        bookedSeats.addAll(saved);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     const rows = 5;
     const cols = 8;
 
-    final int totalPrice = selectedSeats.length * seatPrice; // ✅ tổng tiền
+    final int totalPrice = selectedSeats.length * seatPrice;
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         title: Text(
           "Đặt ghế - ${widget.movie}",
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.white),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Colors.red.shade700,
       ),
       body: Column(
         children: [
           const SizedBox(height: 10),
-
-          /// Thông tin phim
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
-              "🎬 ${widget.movie}\n Rạp: ${widget.cinema} •  Suất: ${widget.timeSlot}",
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black87,
-                height: 1.4,
-              ),
+              "🎬 ${widget.movie}\nRạp: ${widget.cinema} • Suất: ${widget.timeSlot}",
+              style: const TextStyle(fontSize: 16, color: Colors.black87, height: 1.4),
               textAlign: TextAlign.center,
             ),
           ),
-
           const SizedBox(height: 20),
-
-          /// Màn hình chiếu
           Container(
             width: 240,
             height: 40,
@@ -71,9 +77,7 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
-              borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(80),
-              ),
+              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(80)),
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.shade400,
@@ -83,18 +87,9 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
               ],
             ),
             alignment: Alignment.center,
-            child: const Text(
-              "MÀN HÌNH CHIẾU",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black54,
-              ),
-            ),
+            child: const Text("MÀN HÌNH CHIẾU", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54)),
           ),
-
-          const SizedBox(height: 40),
-
-          /// Huyền thoại ghế (Legend)
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
@@ -106,10 +101,7 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
               ],
             ),
           ),
-
-          const SizedBox(height: 150),
-
-          /// Danh sách ghế
+          const SizedBox(height: 10),
           Expanded(
             child: GridView.builder(
               padding: const EdgeInsets.all(12),
@@ -123,9 +115,8 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
                 final row = index ~/ cols;
                 final col = index % cols;
                 final seatId = '${String.fromCharCode(65 + row)}${col + 1}';
-
-                final bool isBooked = bookedSeats.contains(seatId);
-                final bool isSelected = selectedSeats.contains(seatId);
+                final isBooked = bookedSeats.contains(seatId);
+                final isSelected = selectedSeats.contains(seatId);
 
                 Color seatColor;
                 if (isBooked) {
@@ -172,9 +163,7 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
                             : isSelected
                             ? Colors.white
                             : Colors.black,
-                        fontWeight: isSelected
-                            ? FontWeight.bold
-                            : FontWeight.normal,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -182,14 +171,12 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
               },
             ),
           ),
-
-          /// 💵 Hiển thị tổng giá vé
           Padding(
             padding: const EdgeInsets.only(bottom: 6),
             child: Text(
               selectedSeats.isEmpty
                   ? "Chưa chọn ghế"
-                  : "Tổng tiền: ${totalPrice.toString()} VND",
+                  : "Tổng tiền: $totalPrice VND",
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -197,11 +184,8 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
               ),
             ),
           ),
-
-          /// Nút Tiếp tục
           Padding(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
             child: GestureDetector(
               onTap: selectedSeats.isEmpty
                   ? null
@@ -216,32 +200,16 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
                       seats: selectedSeats.toList(),
                     ),
                   ),
-                );
+                ).then((_) => _loadBookedSeats());
               },
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
                   gradient: selectedSeats.isEmpty
-                      ? LinearGradient(colors: [
-                    Colors.grey.shade400,
-                    Colors.grey.shade300
-                  ])
-                      : const LinearGradient(
-                    colors: [Colors.redAccent, Colors.red],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
+                      ? LinearGradient(colors: [Colors.grey.shade400, Colors.grey.shade300])
+                      : const LinearGradient(colors: [Colors.redAccent, Colors.red]),
                   borderRadius: BorderRadius.circular(30),
-                  boxShadow: selectedSeats.isEmpty
-                      ? []
-                      : [
-                    BoxShadow(
-                      color: Colors.redAccent.withOpacity(0.4),
-                      blurRadius: 6,
-                      offset: const Offset(0, 3),
-                    )
-                  ],
                 ),
                 alignment: Alignment.center,
                 child: Text(
@@ -249,9 +217,7 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
                       ? "Chọn ghế để tiếp tục"
                       : "Tiếp tục (${selectedSeats.length}) ghế",
                   style: TextStyle(
-                    color: selectedSeats.isEmpty
-                        ? Colors.black54
-                        : Colors.white,
+                    color: selectedSeats.isEmpty ? Colors.black54 : Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -264,7 +230,6 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
     );
   }
 
-  /// Hàm tạo ô nhỏ cho phần chú thích màu ghế
   Widget _buildLegendBox(Color color, String label) {
     return Row(
       children: [
