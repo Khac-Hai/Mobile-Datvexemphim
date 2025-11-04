@@ -1,4 +1,3 @@
-// lib/screens/register_screen.dart
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
@@ -39,12 +38,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (user != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Đăng ký thành công! Vui lòng đăng nhập.")),
+          const SnackBar(
+            content: Text(
+              "Đăng ký thành công! 🎉\nVui lòng kiểm tra email của bạn để xác thực trước khi đăng nhập.",
+              style: TextStyle(fontSize: 15),
+            ),
+          ),
         );
-        Navigator.of(context).pop(); // quay lại LoginScreen
+        Navigator.of(context).pop(); // Quay lại LoginScreen
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Đăng ký thất bại")),
+          const SnackBar(content: Text("Đăng ký thất bại, vui lòng thử lại.")),
         );
       }
     } catch (e) {

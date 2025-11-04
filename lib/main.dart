@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart'; // file được tạo sau khi chạy flutterfire configure
-import 'auth/auth_wrapper.dart'; // 👈 import AuthWrapper (đường dẫn tùy bạn)
+import 'firebase_options.dart';
+import 'auth/auth_wrapper.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

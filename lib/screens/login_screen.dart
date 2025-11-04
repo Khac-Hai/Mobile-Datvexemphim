@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../services/auth_service.dart';
 import 'register_screen.dart';
 import 'home_screen.dart';
@@ -30,22 +29,29 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
 
       if (user != null) {
-        // Đăng nhập thành công → vào MainScreen
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const HomeScreen()),
-        );
-
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Đăng nhập thất bại")),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Đăng nhập thất bại: $e")),
+        SnackBar(content: Text("$e")),
       );
     } finally {
       if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _resendVerificationEmail() async {
+    try {
+      await _auth.sendVerificationEmail();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Email xác thực đã được gửi lại!")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Lỗi gửi lại email: $e")),
+      );
     }
   }
 
@@ -109,9 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          setState(
-                                () => _isPasswordVisible = !_isPasswordVisible,
-                          );
+                          setState(() => _isPasswordVisible = !_isPasswordVisible);
                         },
                       ),
                     ),
@@ -137,12 +141,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
+
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const RegisterScreen(),
-                        ),
+                        MaterialPageRoute(builder: (_) => const RegisterScreen()),
                       );
                     },
                     child: const Text(
