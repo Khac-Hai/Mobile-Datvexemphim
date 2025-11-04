@@ -26,7 +26,7 @@ class SettingScreen extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.9,
           height: double.infinity,
           decoration: const BoxDecoration(
-            color: Colors.white, // 🎨 Giống CustomMenu
+            color: Colors.white, //  Giống CustomMenu
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(30),
               bottomLeft: Radius.circular(30),

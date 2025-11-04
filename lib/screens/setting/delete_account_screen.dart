@@ -22,7 +22,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       final email = user.email!;
       final password = _passwordController.text.trim();
 
-      // ✅ Xác thực lại người dùng
+      //  Xác thực lại người dùng
       final credential = EmailAuthProvider.credential(
         email: email,
         password: password,

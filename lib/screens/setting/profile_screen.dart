@@ -56,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen1> {
     if (user == null) return;
 
     try {
-      // 🟢 BƯỚC QUAN TRỌNG: Cập nhật displayName trong Firebase Auth
+      //  BƯỚC QUAN TRỌNG: Cập nhật displayName trong Firebase Auth
       if (_nameController.text != user.displayName) {
         await user.updateDisplayName(_nameController.text);
       }

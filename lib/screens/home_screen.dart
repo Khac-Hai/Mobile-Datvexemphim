@@ -27,10 +27,10 @@ class _MovieHomePageState extends State<HomeScreen> {
     final bool isMovieTab = _currentIndex == 0;
 
     return Scaffold(
-      extendBodyBehindAppBar: isMovieTab, // ✅ cho phép phim tràn nền AppBar
+      extendBodyBehindAppBar: isMovieTab, //  cho phép phim tràn nền AppBar
       appBar: isMovieTab
-          ? const CustomAppBar(isTransparent: true) // ✅ AppBar trong suốt cho tab phim
-          : null, // ❌ 3 tab còn lại không có AppBar
+          ? const CustomAppBar(isTransparent: true) //  AppBar trong suốt cho tab phim
+          : null, //  3 tab còn lại không có AppBar
       backgroundColor: isMovieTab ? Colors.transparent : Colors.black,
       body: _screens[_currentIndex],
       bottomNavigationBar: ClipRRect(

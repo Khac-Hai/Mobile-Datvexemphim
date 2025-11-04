@@ -1,9 +1,7 @@
 import 'package:datvexemphim/screens/setting/delete_account_screen.dart';
 import 'package:datvexemphim/screens/setting/profile_screen.dart';
 import 'package:flutter/material.dart';
-import 'setting/profile_screen.dart';
 import 'setting/change_password_screen.dart';
-import 'setting/delete_account_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -34,7 +32,7 @@ class ProfileScreen extends StatelessWidget {
         children: [
           _buildMenuItem(
             context,
-            'lib/assets/icons/iconprofile.png', // 👉 Thay hình tương ứng
+            'lib/assets/icons/iconprofile.png',
             'Thay đổi thông tin thành viên',
                 () {
                   Navigator.push(
@@ -47,7 +45,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           _buildMenuItem(
             context,
-            'lib/assets/icons/iconprofile.png', // 👉 Thay hình tương ứng
+            'lib/assets/icons/iconprofile.png',
             'Đổi mật khẩu',
                 () {
                   Navigator.push(
@@ -60,7 +58,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           _buildMenuItem(
             context,
-            'lib/assets/icons/iconprofile.png', // 👉 Thay hình tương ứng
+            'lib/assets/icons/iconprofile.png',
             'Xoá tài khoản',
                 () {
                   Navigator.push(

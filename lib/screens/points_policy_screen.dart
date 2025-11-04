@@ -43,7 +43,7 @@ class PointsPolicyScreen extends StatelessWidget {
 
               _sectionTitle('4. Hạng thành viên (mẫu)'),
               const SizedBox(height: 8),
-              // ✅ Sửa lỗi layout bằng cách cho phép cuộn ngang:
+              //  Sửa lỗi layout bằng cách cho phép cuộn ngang:
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(

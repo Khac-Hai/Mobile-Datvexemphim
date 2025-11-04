@@ -14,7 +14,7 @@ class MyTicketsScreen extends StatefulWidget {
 
 class _MyTicketsScreenState extends State<MyTicketsScreen> {
   List<Ticket> tickets = [];
-  List<String> ticketIds = []; // 👈 Lưu id vé trong Firestore
+  List<String> ticketIds = []; // Lưu id vé trong Firestore
   bool isLoading = true;
 
   @override
@@ -23,13 +23,13 @@ class _MyTicketsScreenState extends State<MyTicketsScreen> {
     _loadTickets();
   }
 
-  /// ✅ Lấy vé từ Firestore (ưu tiên) hoặc local SharedPreferences
+  /// Lấy vé từ Firestore (ưu tiên) hoặc local SharedPreferences
   Future<void> _loadTickets() async {
     final user = FirebaseAuth.instance.currentUser;
 
     try {
       if (user != null) {
-        // 🔥 Lấy dữ liệu từ Firestore collection "tickets"
+        //  Lấy dữ liệu từ Firestore collection "tickets"
         final snapshot = await FirebaseFirestore.instance
             .collection('tickets')
             .orderBy('date', descending: true)
@@ -46,7 +46,7 @@ class _MyTicketsScreenState extends State<MyTicketsScreen> {
           isLoading = false;
         });
       } else {
-        // 📦 Nếu chưa đăng nhập, lấy từ local
+        //  Nếu chưa đăng nhập, lấy từ local
         final prefs = await SharedPreferences.getInstance();
         List<String> data = prefs.getStringList('tickets') ?? [];
         setState(() {
@@ -55,7 +55,7 @@ class _MyTicketsScreenState extends State<MyTicketsScreen> {
         });
       }
     } catch (e) {
-      debugPrint("❌ Lỗi khi tải vé: $e");
+      debugPrint(" Lỗi khi tải vé: $e");
       setState(() => isLoading = false);
     }
   }
@@ -87,7 +87,7 @@ class _MyTicketsScreenState extends State<MyTicketsScreen> {
       if (user != null && ticketIds.isNotEmpty && index < ticketIds.length) {
         final ticketId = ticketIds[index];
 
-        // 🔥 Xoá trong Firestore
+        //  Xoá trong Firestore
         await FirebaseFirestore.instance
             .collection('tickets')
             .doc(ticketId)
@@ -97,13 +97,13 @@ class _MyTicketsScreenState extends State<MyTicketsScreen> {
           const SnackBar(content: Text("🗑️ Đã xoá vé khỏi Firestore!")),
         );
 
-        // 🧩 Xoá trong danh sách hiện tại
+        //  Xoá trong danh sách hiện tại
         setState(() {
           tickets.removeAt(index);
           ticketIds.removeAt(index);
         });
       } else {
-        // 📦 Xoá trong SharedPreferences
+        //  Xoá trong SharedPreferences
         final prefs = await SharedPreferences.getInstance();
         List<String> data = prefs.getStringList('tickets') ?? [];
         if (index < data.length) {
@@ -116,11 +116,11 @@ class _MyTicketsScreenState extends State<MyTicketsScreen> {
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("🗑️ Đã xoá vé khỏi thiết bị!")),
+          const SnackBar(content: Text("️ Đã xoá vé khỏi thiết bị!")),
         );
       }
     } catch (e) {
-      debugPrint("❌ Lỗi khi xoá vé: $e");
+      debugPrint(" Lỗi khi xoá vé: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Lỗi khi xoá vé: $e")),
       );
@@ -138,7 +138,7 @@ class _MyTicketsScreenState extends State<MyTicketsScreen> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : tickets.isEmpty
-          ? const Center(child: Text("Bạn chưa đặt vé nào 🎟️"))
+          ? const Center(child: Text("Bạn chưa đặt vé nào 🎟"))
           : ListView.builder(
         itemCount: tickets.length,
         itemBuilder: (context, index) {
@@ -162,7 +162,7 @@ class _MyTicketsScreenState extends State<MyTicketsScreen> {
               ),
               trailing: IconButton(
                 icon: const Icon(Icons.delete, color: Colors.redAccent),
-                onPressed: () => _deleteTicket(index), // 👈 Gọi hàm xoá
+                onPressed: () => _deleteTicket(index), //  Gọi hàm xoá
               ),
             ),
           );

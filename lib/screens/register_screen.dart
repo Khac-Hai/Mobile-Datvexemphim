@@ -40,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
-              "Đăng ký thành công! 🎉\nVui lòng kiểm tra email của bạn để xác thực trước khi đăng nhập.",
+              "Đăng ký thành công! \nVui lòng kiểm tra email của bạn để xác thực trước khi đăng nhập.",
               style: TextStyle(fontSize: 15),
             ),
           ),

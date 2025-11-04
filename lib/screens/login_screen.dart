@@ -70,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    "🎬 Đặt Vé Xem Phim",
+                    " Đặt Vé Xem Phim",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 28,

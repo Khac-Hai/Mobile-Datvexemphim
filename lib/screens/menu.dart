@@ -23,7 +23,7 @@ class CustomMenu extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🧭 Danh sách các mục chính
+            //  Danh sách các mục chính
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
@@ -76,7 +76,7 @@ class CustomMenu extends StatelessWidget {
                   }),
                   const Divider(),
 
-                  // 👉 Liên hệ
+                  //  Liên hệ
                   _buildMenuItem(Icons.support_agent, "Liên hệ", () {
                     Navigator.pop(context);
                     Navigator.push(
@@ -86,7 +86,7 @@ class CustomMenu extends StatelessWidget {
                   }),
                   const Divider(),
 
-                  // 🌐 Mạng xã hội — Đặt ngay dưới "Liên hệ"
+                  //  Mạng xã hội — Đặt ngay dưới "Liên hệ"
                   const SizedBox(height: 10),
                   const Center(
                     child: Text(
@@ -109,7 +109,7 @@ class CustomMenu extends StatelessWidget {
               ),
             ),
 
-            // 🔢 Phiên bản + nút ngôn ngữ
+            //  Phiên bản + nút ngôn ngữ
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
               child: Row(

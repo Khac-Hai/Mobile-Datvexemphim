@@ -1,10 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-
-// Giả định các file này đã tồn tại trong project của bạn
 import '../services/notification_screen.dart';
 import '../screens/setting_screen.dart';
-import '../screens/menu.dart'; // 👈 thêm dòng này
+import '../screens/menu.dart'; //  thêm dòng này
 
 // Màu nền tối cho SettingScreen
 const Color _darkBackgroundColor = Color(0xFF1E1E1E);
@@ -26,7 +24,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           IconButton(
             icon: const Icon(Icons.menu, color: Colors.white, size: 28),
             onPressed: () {
-              // 👇 Hiển thị Menu trượt từ trái sang phải
+              //  Hiển thị Menu trượt từ trái sang phải
               showGeneralDialog(
                 context: context,
                 barrierDismissible: true,
@@ -75,7 +73,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 icon: const Icon(Icons.person_outline_rounded,
                     color: Colors.white, size: 28),
                 onPressed: () {
-                  // 👇 Hiển thị Setting trượt từ phải sang trái
+                  //  Hiển thị Setting trượt từ phải sang trái
                   showGeneralDialog(
                     context: context,
                     barrierDismissible: true,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../auth/auth_wrapper.dart'; // 👈 nhớ import để quay lại AuthWrapper
+import '../auth/auth_wrapper.dart';
 
 Future<void> showLogoutDialog(BuildContext context) async {
   showDialog(
     context: context,
-    barrierDismissible: true, // có thể bấm ra ngoài để đóng
+    barrierDismissible: true,
     builder: (context) {
       return AlertDialog(
         shape: RoundedRectangleBorder(
@@ -51,13 +51,13 @@ Future<void> showLogoutDialog(BuildContext context) async {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),
             onPressed: () async {
-              // 🧩 Đăng xuất khỏi Firebase
+              //  Đăng xuất khỏi Firebase
               await FirebaseAuth.instance.signOut();
 
-              // 🧩 Đóng hộp thoại
+              //  Đóng hộp thoại
               Navigator.of(context).pop();
 
-              // 🧩 Quay về AuthWrapper (tự động hiển thị LoginScreen)
+              //  Quay về AuthWrapper (tự động hiển thị LoginScreen)
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (_) => const AuthWrapper()),
                     (route) => false,
