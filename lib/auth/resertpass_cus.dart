@@ -1,57 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../customer/services/auth_service.dart';
-import 'register_screen.dart';
-import '../customer/screens/home_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class ResetPasswordCus extends StatefulWidget {
+  const ResetPasswordCus({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<ResetPasswordCus> createState() => _ResetPasswordScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _ResetPasswordScreenState extends State<ResetPasswordCus> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final AuthService _auth = AuthService();
-
-  bool _isPasswordVisible = false;
   bool _loading = false;
 
-  Future<void> _login() async {
-    setState(() => _loading = true);
-    try {
-      final user = await _auth.signInWithEmail(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      );
-
-      if (!mounted) return;
-
-      if (user != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const HomeScreen()),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
-    } finally {
-      if (mounted) setState(() => _loading = false);
-    }
-  }
-
-  /// Hàm gửi email reset password
-  Future<void> _forgotPassword() async {
+  Future<void> _resetPassword() async {
     if (_emailController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Vui lòng nhập email trước")),
+        const SnackBar(content: Text("Vui lòng nhập email")),
       );
       return;
     }
 
+    setState(() => _loading = true);
     try {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: _emailController.text.trim());
@@ -59,25 +28,23 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Email đặt lại mật khẩu đã được gửi")),
       );
+      Navigator.pop(context); // quay lại màn hình login
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Lỗi: ${e.toString()}")),
       );
+    } finally {
+      if (mounted) setState(() => _loading = false);
     }
   }
 
-  InputDecoration _inputStyle({
-    required String hint,
-    required IconData icon,
-    Widget? suffix,
-  }) {
+  InputDecoration _inputStyle({required String hint, required IconData icon}) {
     return InputDecoration(
       filled: true,
       fillColor: Colors.white.withOpacity(0.15),
       hintText: hint,
       hintStyle: const TextStyle(color: Colors.white70),
       prefixIcon: Icon(icon, color: Colors.white),
-      suffixIcon: suffix,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
         borderSide: BorderSide.none,
@@ -116,13 +83,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Icon(
-                      Icons.movie_filter,
+                      Icons.lock_reset,
                       color: Colors.redAccent,
                       size: 64,
                     ),
                     const SizedBox(height: 12),
                     const Text(
-                      "Đặt Vé Xem Phim",
+                      "Quên mật khẩu",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 26,
@@ -132,49 +99,22 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 32),
 
-                    /// Email
                     TextField(
                       controller: _emailController,
                       style: const TextStyle(color: Colors.white),
                       decoration: _inputStyle(
-                        hint: "Email",
+                        hint: "Nhập email của bạn",
                         icon: Icons.email_outlined,
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    /// Password
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: !_isPasswordVisible,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: _inputStyle(
-                        hint: "Mật khẩu",
-                        icon: Icons.lock_outline,
-                        suffix: IconButton(
-                          icon: Icon(
-                            _isPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            setState(() =>
-                            _isPasswordVisible = !_isPasswordVisible);
-                          },
-                        ),
                       ),
                     ),
 
                     const SizedBox(height: 28),
 
-                    /// Login Button
                     SizedBox(
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: _loading ? null : _login,
+                        onPressed: _loading ? null : _resetPassword,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
                           shape: RoundedRectangleBorder(
@@ -183,46 +123,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           elevation: 6,
                         ),
                         child: _loading
-                            ? const CircularProgressIndicator(
-                          color: Colors.white,
-                        )
+                            ? const CircularProgressIndicator(color: Colors.white)
                             : const Text(
-                          "Đăng nhập",
+                          "Gửi email đặt lại mật khẩu",
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const RegisterScreen()),
-                        );
-                      },
-                      child: const Text(
-                        "Chưa có tài khoản? Đăng ký",
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-
-                    /// Forgot Password
-                    TextButton(
-                      onPressed: _forgotPassword,
-                      child: const Text(
-                        "Quên mật khẩu?",
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
                         ),
                       ),
                     ),
