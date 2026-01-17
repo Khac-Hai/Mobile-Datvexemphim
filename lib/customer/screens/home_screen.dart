@@ -3,7 +3,7 @@ import '../services/movie_screen.dart';
 import '../services/gift_screen.dart';
 import '../services/cinema_screen.dart';
 import '../services/promo_screen.dart';
-import '../screens/custom_app_bar.dart';
+import 'custom_app_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

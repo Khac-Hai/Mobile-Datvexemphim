@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/chonphim.dart';
-import '../services/seat_selection_screen.dart';
+import 'seat_selection_screen.dart';
 import '../services/time_slot_screen.dart';
 
 class CinemaScreen extends StatefulWidget {

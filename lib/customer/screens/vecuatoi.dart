@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:datvexemphim/models/ticket_model.dart';
+import 'package:datvexemphim/customer//models/ticket_model.dart';
 
 class MyTicketsScreen extends StatefulWidget {
   const MyTicketsScreen({super.key});

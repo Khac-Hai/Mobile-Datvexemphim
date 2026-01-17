@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../auth/auth_wrapper.dart';
+import '../customer/auth/auth_wrapper.dart';
 
 Future<void> showLogoutDialog(BuildContext context) async {
   showDialog(

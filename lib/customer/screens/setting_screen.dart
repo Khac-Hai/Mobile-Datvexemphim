@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'logout.dart';
+import '../../auth/logout.dart';
 import 'profile_screen.dart';
 import 'points_policy_screen.dart';
 import 'vecuatoi.dart';

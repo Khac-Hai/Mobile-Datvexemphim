@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../services/notification_screen.dart';
-import '../screens/setting_screen.dart';
-import '../screens/menu.dart'; //  thêm dòng này
+import 'setting_screen.dart';
+import 'menu.dart'; //  thêm dòng này
 
 // Màu nền tối cho SettingScreen
 const Color _darkBackgroundColor = Color(0xFF1E1E1E);

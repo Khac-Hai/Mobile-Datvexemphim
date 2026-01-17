@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'core/theme.dart';
-import 'screens/login_screen.dart';
+import 'customer/core/theme.dart';
+import 'auth/login_screen_cus.dart';
 
 
 class MyApp extends StatelessWidget {

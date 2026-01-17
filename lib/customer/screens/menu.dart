@@ -1,9 +1,9 @@
-import 'package:datvexemphim/services/chonphim.dart';
+import 'package:datvexemphim/customer/services/chonphim.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:datvexemphim/services/cinema_screen.dart';
-import 'package:datvexemphim/services/gift_screen.dart';
-import 'package:datvexemphim/services/promo_screen.dart';
+import 'package:datvexemphim/customer/services/cinema_screen.dart';
+import 'package:datvexemphim/customer/services/gift_screen.dart';
+import 'package:datvexemphim/customer/services/promo_screen.dart';
 import '../services/chonphim.dart';
 import 'contact_screen.dart';
 

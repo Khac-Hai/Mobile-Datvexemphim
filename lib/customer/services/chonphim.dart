@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'time_slot_screen.dart';
-import 'package:datvexemphim/models/movie.dart'; // 👈 nhớ import file Movie vào
+import 'package:datvexemphim/customer/models/movie.dart'; // 👈 nhớ import file Movie vào
 
 class ChonPhim extends StatefulWidget {
   final String selectedCinema;

@@ -1,5 +1,5 @@
-import 'package:datvexemphim/screens/setting/delete_account_screen.dart';
-import 'package:datvexemphim/screens/setting/profile_screen.dart';
+import 'package:datvexemphim/customer/screens/setting/delete_account_screen.dart';
+import 'package:datvexemphim/customer/screens/setting/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'setting/change_password_screen.dart';
 

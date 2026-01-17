@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'auth/auth_wrapper.dart';
+import 'auth/login_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorSchemeSeed: Colors.red,
       ),
-      home: const AuthWrapper(), // 👈 Dùng AuthWrapper thay vì LoginScreen
+      home: const RoleSelectionScreen(), //
     );
   }
 }

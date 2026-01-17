@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:datvexemphim/screens/home_screen.dart';
+import 'package:datvexemphim/customer/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:datvexemphim/models/ticket_model.dart';
-import 'package:datvexemphim/screens/vecuatoi.dart';
+import 'package:datvexemphim/customer/models/ticket_model.dart';
+import 'package:datvexemphim/customer/screens/vecuatoi.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class PaymentScreen extends StatefulWidget {
