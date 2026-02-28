@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../customer/services/auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -12,16 +13,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-  TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   final AuthService _auth = AuthService();
 
   bool _loading = false;
   bool _isPasswordVisible = false;
 
   Future<void> _register() async {
-    if (_passwordController.text.trim() !=
-        _confirmPasswordController.text.trim()) {
+    if (_passwordController.text.trim() != _confirmPasswordController.text.trim()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Mật khẩu không khớp")),
       );
@@ -39,6 +38,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (!mounted) return;
 
       if (user != null) {
+        // ✅ Lưu thông tin user vào Firestore
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'email': user.email,
+          'name': _nameController.text.trim(),
+          'role': 'customer', // mặc định là khách hàng
+          'createdAt': Timestamp.now(),
+        });
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
@@ -93,7 +100,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             width: double.infinity,
           ),
           Container(color: Colors.black.withOpacity(0.65)),
-
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24),
@@ -107,11 +113,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
-                      Icons.person_add_alt_1,
-                      color: Colors.redAccent,
-                      size: 64,
-                    ),
+                    const Icon(Icons.person_add_alt_1, color: Colors.redAccent, size: 64),
                     const SizedBox(height: 12),
                     const Text(
                       "Tạo tài khoản",
@@ -156,14 +158,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         icon: Icons.lock_outline,
                         suffix: IconButton(
                           icon: Icon(
-                            _isPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                             color: Colors.white,
                           ),
                           onPressed: () {
-                            setState(() =>
-                            _isPasswordVisible = !_isPasswordVisible);
+                            setState(() => _isPasswordVisible = !_isPasswordVisible);
                           },
                         ),
                       ),
@@ -197,9 +196,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           elevation: 6,
                         ),
                         child: _loading
-                            ? const CircularProgressIndicator(
-                          color: Colors.white,
-                        )
+                            ? const CircularProgressIndicator(color: Colors.white)
                             : const Text(
                           "Đăng ký",
                           style: TextStyle(
@@ -216,10 +213,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       onPressed: () => Navigator.pop(context),
                       child: const Text(
                         "Đã có tài khoản? Đăng nhập",
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(color: Colors.white70, fontSize: 14),
                       ),
                     ),
                   ],

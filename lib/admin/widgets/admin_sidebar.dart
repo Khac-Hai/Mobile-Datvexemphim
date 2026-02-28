@@ -1,8 +1,8 @@
+import 'package:datvexemphim/admin/screens/promo_screen.dart';
+import 'package:datvexemphim/admin/screens/voucher_screen.dart';
 import 'package:flutter/material.dart';
 import '../screens/movies_screen.dart';
-import '../screens/showtime_screen.dart';
 import '../screens/theaters_screen.dart';
-import '../screens/cities_screen.dart';
 import '../screens/users_screen.dart';
 
 class AdminSidebar extends StatelessWidget {
@@ -17,31 +17,30 @@ class AdminSidebar extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 24),
           children: [
             const DrawerHeader(
-              child: Text("Henry Klein",
-                  style: TextStyle(color: Colors.white, fontSize: 20)),
+              child: Text(
+                "Nguyễn Khắc Hải",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
             ),
-            _item(context, "Dashboard", Icons.dashboard, () {
-              Navigator.pop(context);
-            }),
             _item(context, "List Movie", Icons.movie, () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const MoviesScreen()));
-            }),
-            _item(context, "Showtimes", Icons.schedule, () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const ShowtimesScreen()));
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const MoviesScreen()));
             }),
             _item(context, "List Theater", Icons.theaters, () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const TheatersScreen()));
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const TheatersScreen()));
             }),
-            _item(context, "City Management", Icons.location_city, () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const CitiesScreen()));
+            _item(context, "List Voucher", Icons.card_giftcard, () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const VoucherScreen()));
+            }),
+            _item(context, "List Promo", Icons.local_offer, () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const PromoAdminScreen()));
             }),
             _item(context, "User Account", Icons.person, () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const UsersScreen()));
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const UsersScreen()));
             }),
           ],
         ),

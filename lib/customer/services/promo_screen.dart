@@ -1,116 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PromoScreen extends StatelessWidget {
   const PromoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final promotions = [
-      {
-        "title": "Mua 1 vé tặng 1 vé",
-        "desc": "Áp dụng cho các suất chiếu trước 17h, từ thứ Hai đến thứ Năm.",
-      },
-      {
-        "title": "Combo bắp nước chỉ 49.000đ",
-        "desc": "Tiết kiệm đến 30% khi mua cùng vé xem phim bất kỳ.",
-      },
-      {
-        "title": "Giảm 20% vé xem phim 2D và 3D",
-        "desc": "Dành cho học sinh, sinh viên có thẻ học sinh/sinh viên hợp lệ.",
-      },
-      {
-        "title": "Hoàn tiền 15% khi thanh toán qua MoMo",
-        "desc": "Áp dụng cho giao dịch từ 100.000đ trở lên trong khung giờ 9h–21h.",
-      },
-      {
-        "title": "Thành viên VIP – Nhận ưu đãi đặc biệt mỗi tháng",
-        "desc": "Tích điểm đổi quà, nhận vé miễn phí và ưu tiên chọn ghế.",
-      },
-    ];
-
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F9F9),
+      backgroundColor: Colors.white,
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // === THANH TIÊU ĐỀ CÓ NÚT QUAY LẠI ===
+          // THANH TIÊU ĐỀ
           Container(
             width: double.infinity,
-            padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top + 10,
-              bottom: 12,
-            ),
-            color: Colors.red,
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 10, bottom: 12),
+            color: Colors.red.shade700,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                      color: Colors.white),
-                  onPressed: () => Navigator.pop(context),
-                ),
+                IconButton(icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white), onPressed: () => Navigator.pop(context)),
                 const Expanded(
                   child: Center(
-                    child: Text(
-                      "KHUYẾN MÃI HOT",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
+                    child: Text("KHUYẾN MÃI HOT", style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
                   ),
                 ),
-                const SizedBox(width: 48), // giữ tiêu đề nằm chính giữa
+                const SizedBox(width: 48),
               ],
             ),
           ),
 
-          // === DANH SÁCH KHUYẾN MÃI ===
+          // DANH SÁCH KHUYẾN MÃI
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              itemCount: promotions.length,
-              itemBuilder: (context, index) {
-                final promo = promotions[index];
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 6,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        promo["title"]!,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                          height: 1.3,
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection("promotions").snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+                final docs = snapshot.data!.docs;
+                if (docs.isEmpty) return const Center(child: Text("Chưa có khuyến mãi nào."));
+                return ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: docs.length,
+                  itemBuilder: (context, index) {
+                    final promo = docs[index].data() as Map<String, dynamic>;
+                    return Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      margin: const EdgeInsets.only(bottom: 16),
+                      elevation: 3,
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(16),
+                        title: Text(promo["title"] ?? "", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(promo["desc"] ?? "", style: const TextStyle(fontSize: 15, color: Colors.black87)),
                         ),
+                        trailing: const Icon(Icons.local_offer, color: Colors.redAccent),
                       ),
-                      const SizedBox(height: 6),
-                      Text(
-                        promo["desc"]!,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: Colors.black87,
-                          height: 1.5,
-                        ),
-                      ),
-                    ],
-                  ),
+                    );
+                  },
                 );
               },
             ),
