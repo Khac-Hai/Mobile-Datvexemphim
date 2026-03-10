@@ -1,11 +1,10 @@
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datvexemphim/customer/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:datvexemphim/customer/models/ticket_model.dart';
-import 'package:datvexemphim/customer/screens/vecuatoi.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'qr.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String cinema;
@@ -26,278 +25,303 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  String selectedMethod = "ck"; // ck = chuyển khoản, tm = tiền mặt
 
-  /// ✅ Lưu ghế đã đặt vào local
+  /// phương thức thanh toán
+  String selectedMethod = "noidia";
+
+  /// combo
+  Map<String, Map<String, dynamic>> combos = {
+    "Combo Bắp + Coca": {
+      "price": 70000,
+      "qty": 0,
+      "img": "https://iguov8nhvyobj.vcdn.cloud/media/concession/web/6465deb2716d7_1684397746.png"
+    },
+    "Combo Bắp lớn + 2 Coca": {
+      "price": 100000,
+      "qty": 0,
+      "img": "https://iguov8nhvyobj.vcdn.cloud/media/concession/web/6644731d5a8f5_1715761949.png"
+    },
+    "Combo Bắp + Pepsi": {
+      "price": 65000,
+      "qty": 0,
+      "img": "https://iguov8nhvyobj.vcdn.cloud/media/concession/web/68398554b9635_1748600149.png"
+    },
+  };
+
+  /// lưu ghế đã đặt
   Future<void> _markSeatsAsBooked() async {
     final prefs = await SharedPreferences.getInstance();
     final key = '${widget.movie}_${widget.cinema}_${widget.timeSlot}';
     final saved = prefs.getStringList(key) ?? [];
+
     saved.addAll(widget.seats);
+
     await prefs.setStringList(key, saved.toSet().toList());
   }
 
-  /// ✅ Lưu vé lên Firebase Firestore
+  /// lưu firebase
   Future<void> _saveTicketToFirebase(Ticket ticket) async {
-    try {
-      await FirebaseFirestore.instance.collection('tickets').add({
-        'movie': ticket.movie,
-        'cinema': ticket.cinema,
-        'timeSlot': ticket.timeSlot,
-        'seats': ticket.seats,
-        'total': ticket.total,
-        'date': ticket.date.toIso8601String(),
-        'paymentMethod': selectedMethod == 'ck'
-            ? 'Chuyển khoản ngân hàng'
-            : 'Tiền mặt',
-      });
-      debugPrint('✅ Vé đã được lưu lên Firebase!');
-    } catch (e) {
-      debugPrint('❌ Lỗi lưu vé: $e');
-    }
+
+    Map<String, Map<String, dynamic>> selectedCombos = {};
+
+    combos.forEach((key, value) {
+      if (value["qty"] > 0) {
+        selectedCombos[key] = {
+          "qty": value["qty"],
+          "price": value["price"]
+        };
+      }
+    });
+
+    await FirebaseFirestore.instance.collection('tickets').add({
+      'movie': ticket.movie,
+      'cinema': ticket.cinema,
+      'timeSlot': ticket.timeSlot,
+      'seats': ticket.seats,
+      'combos': selectedCombos,
+      'paymentMethod': selectedMethod,
+      'total': ticket.total,
+      'date': ticket.date.toIso8601String(),
+    });
   }
 
-  /// ✅ Hiển thị hộp thoại thanh toán thành công
-  void _showSuccessDialog(BuildContext context, int total) {
+  /// dialog thành công
+  void _showSuccessDialog(int total) {
+
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        elevation: 8,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.green.shade100,
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(16),
-                child: const Icon(
+      builder: (_) {
+
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+
+          child: Padding(
+            padding: const EdgeInsets.all(25),
+
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+
+                const Icon(
                   Icons.check_circle,
                   color: Colors.green,
-                  size: 60,
+                  size: 90,
                 ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                "Thanh toán thành công!",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+
+                const SizedBox(height: 15),
+
+                const Text(
+                  "Thanh toán thành công",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 14),
-              Text(
-                "Bạn đã đặt ${widget.seats.length} ghế cho phim:",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.grey.shade800),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                widget.movie,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.redAccent,
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
+
+                const SizedBox(height: 10),
+
+                const SizedBox(height: 20),
+
+                ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red.shade600,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    backgroundColor: Colors.red,
+                    minimumSize: const Size(140, 45),
                   ),
                   onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pushReplacement(
+
+                    Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
                         builder: (_) => const HomeScreen(),
                       ),
+                          (route) => false,
                     );
+
                   },
-                  child: const Text(
-                    "Quay lại trang chủ",
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+                  child: const Text("Trang chủ"),
+                )
+
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+
     const int seatPrice = 50000;
-    final int total = seatPrice * widget.seats.length;
+
+    int comboPrice = 0;
+
+    combos.forEach((key, value) {
+      comboPrice += (value["price"] as int) * (value["qty"] as int);
+    });
+
+    final int seatTotal = seatPrice * widget.seats.length;
+
+    final int total = seatTotal + comboPrice;
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text("Xác nhận thanh toán",
-            style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.red.shade700,
+        title: const Text(
+          "Thanh toán",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// Thông tin phim
+
+            /// thông tin phim
             Container(
+              width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 6,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "🎬 ${widget.movie.toUpperCase()}",
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text("📍 Rạp: ${widget.cinema}"),
-                  Text("🕒 Suất: ${widget.timeSlot}"),
-                  Text("💺 Ghế: ${widget.seats.join(', ')}"),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            /// Chọn hình thức thanh toán
-            const Text(
-              "Chọn hình thức thanh toán:",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            _buildPaymentOption(
-              icon: Icons.account_balance,
-              title: "Chuyển khoản ngân hàng",
-              method: "ck",
-            ),
-            const SizedBox(height: 12),
-            _buildPaymentOption(
-              icon: Icons.payments_rounded,
-              title: "Tiền mặt tại rạp",
-              method: "tm",
-            ),
-
-            const Spacer(),
-
-            /// Tổng tiền
-            Container(
-              padding:
-              const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 6,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Tổng thanh toán:",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                  Text(
-                    "$total VND",
+                    widget.movie,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.red,
                     ),
                   ),
+                  Text("Rạp: ${widget.cinema}"),
+                  Text("Thời gian: ${widget.timeSlot}"),
+                  Text("Ghế: ${widget.seats.join(", ")}"),
                 ],
               ),
             ),
+
             const SizedBox(height: 20),
 
-            /// Nút xác nhận thanh toán
-            GestureDetector(
-              onTap: () async {
-                final ticket = Ticket(
-                  movie: widget.movie,
-                  cinema: widget.cinema,
-                  timeSlot: widget.timeSlot,
-                  seats: widget.seats,
-                  total: total,
-                  date: DateTime.now(),
-                );
+            /// combo
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "COMBO ƯU ĐÃI LỚN",
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
 
-                await _saveTicketToFirebase(ticket);
-                await _markSeatsAsBooked();
-                _showSuccessDialog(context, total);
-              },
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Colors.redAccent, Colors.red],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.redAccent.withOpacity(0.4),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    )
-                  ],
+            const SizedBox(height: 10),
+
+            Expanded(
+              child: ListView(
+                children: combos.entries.map((combo) {
+                  return _buildComboItem(
+                    combo.key,
+                    combo.value["price"],
+                    combo.value["img"],
+                  );
+                }).toList(),
+              ),
+            ),
+
+            /// PHƯƠNG THỨC THANH TOÁN
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Phương thức thanh toán",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-                alignment: Alignment.center,
-                child: const Text(
-                  "Xác nhận thanh toán",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            _paymentButton(
+              "Thẻ nội địa (ATM)",
+              "noidia",
+              Icons.credit_card,
+            ),
+
+            const SizedBox(height: 8),
+
+            _paymentButton(
+              "Thẻ quốc tế (Visa / Master)",
+              "quocte",
+              Icons.public,
+            ),
+
+            const SizedBox(height: 8),
+
+            _paymentButton(
+              "Thanh toán QR Code",
+              "qr",
+              Icons.qr_code,
+            ),
+
+            const SizedBox(height: 10),
+
+            const SizedBox(height: 10),
+            /// tổng tiền
+            Column(
+              children: [
+                _priceRow("Tiền ghế", seatTotal),
+                _priceRow("Tiền combo", comboPrice),
+                const Divider(),
+                _priceRow("Tổng", total, bold: true),
+              ],
+            ),
+
+            const SizedBox(height: 15),
+
+            /// nút thanh toán
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                minimumSize:
+                const Size(double.infinity, 50),
+              ),
+    onPressed: () async {
+
+    if (selectedMethod == "qr") {
+
+    Navigator.push(
+    context,
+    MaterialPageRoute(
+    builder: (_) => QRPaymentScreen(total: total),
+    ),
+    );
+
+    return;
+    }
+
+    final ticket = Ticket(
+    movie: widget.movie,
+    cinema: widget.cinema,
+    timeSlot: widget.timeSlot,
+    seats: widget.seats,
+    total: total,
+    date: DateTime.now(),
+    );
+
+    await _saveTicketToFirebase(ticket);
+    await _markSeatsAsBooked();
+    _showSuccessDialog(total);
+    },
+              child: const Text(
+                "Thanh toán",
+                style: TextStyle(fontSize: 18),
               ),
             ),
           ],
@@ -306,59 +330,123 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
-  Widget _buildPaymentOption({
-    required IconData icon,
-    required String title,
-    required String method,
-  }) {
-    final bool isSelected = selectedMethod == method;
-    return GestureDetector(
-      onTap: () => setState(() => selectedMethod = method),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.red.shade50 : Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? Colors.red.shade400 : Colors.grey.shade300,
-            width: isSelected ? 2 : 1,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            )
-          ],
-        ),
-        child: Row(
+  /// combo widget
+  Widget _buildComboItem(
+      String name,
+      int price,
+      String img) {
+
+    int qty = combos[name]!["qty"];
+
+    return Card(
+      child: ListTile(
+        leading: Image.network(img, width: 50),
+        title: Text(name),
+        subtitle: Text("$price VND"),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              color: isSelected ? Colors.red.shade700 : Colors.grey.shade600,
-              size: 28,
+
+            IconButton(
+              icon: const Icon(Icons.remove),
+              onPressed: () {
+                if (qty > 0) {
+                  setState(() {
+                    combos[name]!["qty"]--;
+                  });
+                }
+              },
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color:
-                  isSelected ? Colors.red.shade700 : Colors.grey.shade800,
-                ),
-              ),
-            ),
-            Icon(
-              isSelected
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_off,
-              color: isSelected ? Colors.red.shade700 : Colors.grey.shade400,
+
+            Text(qty.toString()),
+
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                setState(() {
+                  combos[name]!["qty"]++;
+                });
+              },
             ),
           ],
         ),
       ),
+    );
+  }
+
+  /// payment button
+  Widget _paymentButton(
+      String title,
+      String method,
+      IconData icon) {
+
+    bool selected = selectedMethod == method;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedMethod = method;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: selected
+              ? Colors.red.shade50
+              : Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: selected
+                ? Colors.red
+                : Colors.grey.shade300,
+          ),
+        ),
+        child: Row(
+          children: [
+
+            Icon(icon,
+                color: selected
+                    ? Colors.red
+                    : Colors.grey),
+
+            const SizedBox(width: 10),
+
+            Expanded(child: Text(title)),
+
+            Icon(
+              selected
+                  ? Icons.radio_button_checked
+                  : Icons.radio_button_off,
+              color: selected
+                  ? Colors.red
+                  : Colors.grey,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _priceRow(
+      String title,
+      int price,
+      {bool bold = false}) {
+
+    return Row(
+      mainAxisAlignment:
+      MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title,
+            style: TextStyle(
+                fontWeight: bold
+                    ? FontWeight.bold
+                    : FontWeight.normal)),
+        Text("$price VND",
+            style: TextStyle(
+                fontWeight: bold
+                    ? FontWeight.bold
+                    : FontWeight.normal)),
+      ],
     );
   }
 }

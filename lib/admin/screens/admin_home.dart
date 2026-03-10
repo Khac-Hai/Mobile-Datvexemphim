@@ -6,6 +6,8 @@ import '../../admin/screens/theaters_screen.dart';
 import '../../admin/screens/voucher_screen.dart';
 import '../../admin/screens/promo_screen.dart';
 import '../../admin/screens/users_screen.dart'; // thêm import
+import '../../admin/screens/revenue_screen.dart';
+
 
 class AdminHomeScreen extends StatelessWidget {
   const AdminHomeScreen({super.key});
@@ -56,6 +58,7 @@ class AdminHomeScreen extends StatelessWidget {
       {"title": "Quản lý voucher", "icon": Icons.card_giftcard, "screen": const VoucherScreen()},
       {"title": "Quản lý khuyến mãi", "icon": Icons.local_offer, "screen": const PromoAdminScreen()},
       {"title": "Quản lý tài khoản", "icon": Icons.person, "screen": const UsersScreen()}, // thêm mục này
+      {"title": "Thống kê doanh thu", "icon": Icons.bar_chart, "screen": const RevenueScreen()},
     ];
 
     return Scaffold(
